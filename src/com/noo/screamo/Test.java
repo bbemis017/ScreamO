@@ -1,7 +1,13 @@
 package com.noo.screamo;
 
 import android.app.Activity;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,9 +15,11 @@ import android.widget.TextView;
 import android.view.LayoutInflater;
 
 
-public class Test extends Activity {
+public class Test extends Activity implements SensorEventListener{
 	
 	private TextView tv_screamed;
+	private SensorManager mSensorManager;
+	private Sensor mSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +28,14 @@ public class Test extends Activity {
         
 
         tv_screamed = (TextView) findViewById(R.id.tv_screamed);
+        
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if ( mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() != 0){
+        	mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        	mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        else
+        	Log.d("SENSOR", "NO ACCELEROMETER");
     }
 
 
@@ -41,4 +57,19 @@ public class Test extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		if( event.values[1] > 5)
+			tv_screamed.setText("" + event.values[1]);
+		
+	}
+
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+		
+	}
 }
