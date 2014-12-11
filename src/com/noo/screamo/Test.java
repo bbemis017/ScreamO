@@ -6,6 +6,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,11 +17,13 @@ import android.widget.TextView;
 import android.view.LayoutInflater;
 
 
-public class Test extends Activity implements SensorEventListener{
+public class Test extends Activity implements SensorEventListener, OnCompletionListener{
 	
 	private TextView tv_screamed;
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
+	private MediaPlayer mp;
+	private int playCalls = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,9 @@ public class Test extends Activity implements SensorEventListener{
         }
         else
         	Log.d("SENSOR", "NO ACCELEROMETER");
+        
+        mp = MediaPlayer.create(this,  R.raw.phone );
+        mp.setOnCompletionListener(this);
     }
 
 
@@ -57,12 +64,24 @@ public class Test extends Activity implements SensorEventListener{
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
+    
+    private void playAudio(){
+    	if( playCalls > 0)
+    		;
+    	else{
+    		mp.start();
+    		playCalls++;
+    	}
+    	
+    }
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if( event.values[1] > 5)
+		if( event.values[1] > 5){
 			tv_screamed.setText("" + event.values[1]);
+			playAudio();
+		}
 		
 	}
 
@@ -70,6 +89,13 @@ public class Test extends Activity implements SensorEventListener{
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onCompletion(MediaPlayer mp) {
+		playCalls = 0;
 		
 	}
 }
