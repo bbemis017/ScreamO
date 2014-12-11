@@ -2,6 +2,7 @@ package com.noo.screamo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -23,7 +24,9 @@ public class Test extends Activity implements SensorEventListener, OnCompletionL
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private MediaPlayer mp;
-	private int playCalls = 0;
+	private boolean playing = false;
+	int count = 0;
+	private final float ERROR = .981f, GRAVITY = 9.81f ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,20 +70,29 @@ public class Test extends Activity implements SensorEventListener, OnCompletionL
     
     
     private void playAudio(){
-    	if( playCalls > 0)
-    		;
+    	if( playing)
+    		return;
     	else{
     		mp.start();
-    		playCalls++;
+    		playing = true;
     	}
     	
     }
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if( event.values[1] > 5){
-			tv_screamed.setText("" + event.values[1]);
+		double accel = Math.sqrt( (double) event.values[0]*event.values[0] + event.values[1]*event.values[1] + event.values[2]*event.values[2] );
+		
+		if( accel < ERROR){
+			tv_screamed.setText("" + event.values[1] + " " + event.values[0] + " " + event.values[2]);
 			playAudio();
+			
+//			Intent intent = getPackageManager().getLaunchIntentForPackage("com.noo.screamo");
+//			if(intent!=null){
+//				intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//				startActivity(intent);
+//				finish();
+//			}
 		}
 		
 	}
@@ -95,7 +107,7 @@ public class Test extends Activity implements SensorEventListener, OnCompletionL
 
 	@Override
 	public void onCompletion(MediaPlayer mp) {
-		playCalls = 0;
+		playing = false;
 		
 	}
 }
