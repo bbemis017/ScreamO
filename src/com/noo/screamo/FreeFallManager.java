@@ -26,14 +26,7 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 		mp.setOnCompletionListener(this);
 	}
 	
-	public FreeFallManager(Activity act, Uri uri){
-		
-		setUp(act);
-		//create mediaplayer with selected mp3 file
-		mp = MediaPlayer.create(act, uri);
-		Log.d("test","created MediaPlayer");
-		mp.setOnCompletionListener(this);
-	}
+	
 	
 	public void newSong(Activity act, Uri uri){
 		mp = MediaPlayer.create(act,uri);
@@ -60,10 +53,7 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 			playing = true;
 		}
 	}
-	
-	public void close(){
-		
-	}
+
 	
 	@Override
 	public void onCompletion(MediaPlayer mp) {

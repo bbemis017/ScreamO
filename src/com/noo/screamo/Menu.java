@@ -58,10 +58,10 @@ public class Menu extends Activity{
 			String songUri = data.getData().getPath();
 			File song = new File(songUri);
 			Log.d("test","created file");
-//			ffm = new FreeFallManager(this, data.getData());
+
 			ffm.newSong(this, data.getData());
 			Log.d("test","created media player");
-			audio.setText( song.getAbsolutePath()  );
+			audio.setText( song.getName()  );
 		}
 	}
 
