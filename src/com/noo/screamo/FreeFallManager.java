@@ -1,32 +1,55 @@
 package com.noo.screamo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.net.Uri;
+import android.util.Log;
 
 public class FreeFallManager implements SensorEventListener, OnCompletionListener{
 	
 	private final float ERROR = .981f;
 	private boolean playing;
 	private MediaPlayer mp;
+	private Sensor mSensor;
+	private SensorManager mSensorManager;
 	
-	public FreeFallManager(Context context){
+	public FreeFallManager(Activity act){
 		
-		playing = false;
-		mp = MediaPlayer.create(context, R.raw.phone);
+		setUp(act);
+		mp = MediaPlayer.create(act, R.raw.phone);
 		mp.setOnCompletionListener(this);
 	}
 	
-	public FreeFallManager(Context context, Uri uri){
+	public FreeFallManager(Activity act, Uri uri){
 		
-		playing = false;
+		setUp(act);
 		//create mediaplayer with selected mp3 file
-		mp = MediaPlayer.create(context, uri);
+		mp = MediaPlayer.create(act, uri);
+		Log.d("test","created MediaPlayer");
 		mp.setOnCompletionListener(this);
+	}
+	
+	public void newSong(Activity act, Uri uri){
+		mp = MediaPlayer.create(act,uri);
+		mp.setOnCompletionListener(this);
+	}
+	
+	private void setUp(Activity act){
+		playing = false;
+		
+		mSensorManager = (SensorManager) act.getSystemService(Context.SENSOR_SERVICE);
+        if ( mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() != 0){
+        	mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        	mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+        else
+        	Log.d("SENSOR", "NO ACCELEROMETER");
 	}
 	
 	private void playAudio(){
@@ -36,6 +59,10 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 			mp.start();
 			playing = true;
 		}
+	}
+	
+	public void close(){
+		
 	}
 	
 	@Override
