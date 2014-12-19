@@ -17,7 +17,7 @@ import android.widget.TextView;
 public class Menu extends Activity{
 	
 	private Button chooseAudio;
-	private TextView audio;
+	public TextView audio, totalFall;
 	private FreeFallManager ffm;
 	
 	
@@ -33,6 +33,7 @@ public class Menu extends Activity{
 		
 		chooseAudio = (Button) findViewById(R.id.b_chooseAudio);
 		audio = (TextView) findViewById(R.id.tv_audio);
+		totalFall = (TextView) findViewById(R.id.tv_totalFall);
 		
 		ffm = new FreeFallManager(this);
 		

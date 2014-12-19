@@ -15,9 +15,14 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 	
 	private final float ERROR = .981f;
 	private boolean playing;
+	private boolean freefall;
 	private MediaPlayer mp;
 	private Sensor mSensor;
 	private SensorManager mSensorManager;
+	private Menu m;
+	
+	private double distance;
+	private double startTime;
 	
 	public FreeFallManager(Activity act){
 		
@@ -35,6 +40,11 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 	
 	private void setUp(Activity act){
 		playing = false;
+		freefall = false;
+		distance = 0;
+		startTime = 0;
+		
+		m = (Menu) act;
 		
 		mSensorManager = (SensorManager) act.getSystemService(Context.SENSOR_SERVICE);
         if ( mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() != 0){
@@ -53,6 +63,27 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 			playing = true;
 		}
 	}
+	
+	private void startFreeFall(){
+		if(freefall)
+			return;
+		else{
+			freefall = true;
+			startTime = System.currentTimeMillis();
+		}
+	}
+	
+	private void stopFreeFall(){
+		if(freefall){
+			freefall = false;
+			double stopTime = System.currentTimeMillis();
+			double delta = (stopTime - startTime) /1000;
+			distance += .5*9.81*delta*delta;
+			
+			m.totalFall.setText("" + distance);
+		}
+		
+	}
 
 	
 	@Override
@@ -65,14 +96,17 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 		double accel = Math.sqrt( (double) event.values[0]*event.values[0] + event.values[1]*event.values[1] + event.values[2]*event.values[2] );
 		if ( accel < ERROR){//if phone is in freefall
 			playAudio();
-			//TODO: do some stuff
+			startFreeFall();
+			
+		}else{// no longer in freefall
+			stopFreeFall();
 		}
 	}
 
 	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		
-		
-	}
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+	
+	public double getFallDistance(){ return distance; }
+	public boolean isFreeFall(){ return freefall; }
 
 }
