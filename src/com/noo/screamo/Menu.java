@@ -5,6 +5,8 @@ import java.io.File;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources.NotFoundException;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
@@ -23,14 +25,20 @@ public class Menu extends Activity{
 	public double totalDistance;
 	public int totalFalls;
 	
+	private SharedPreferences sharedPref;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.menu);
 		
+//		totalDistance = 0;
+//		totalFalls = 0;
 		
-		 
+		sharedPref = ((Context)this).getSharedPreferences(getString(R.string.preference_file_key),Context.MODE_PRIVATE);
+		
+		
 		
 		chooseAudio = (Button) findViewById(R.id.b_chooseAudio);
 		audio = (TextView) findViewById(R.id.tv_audio);
@@ -38,8 +46,22 @@ public class Menu extends Activity{
 		totalFall = (TextView) findViewById(R.id.tv_totalFall);
 		numFalls = (TextView) findViewById(R.id.tv_numFalls);
 		
-		totalDistance = 0;
-		totalFalls = 0;
+		if( sharedPref.contains( getString(R.string.total_distance_key) ) ){
+			readAndDisplay();
+		}else{
+			SharedPreferences.Editor editor = sharedPref.edit();
+			editor.putInt( getString(R.string.total_distance_key), 0);
+			editor.putInt( getString(R.string.falls_key),0);
+			totalFalls = 0;
+			totalDistance = 0;
+			editor.commit();
+		}
+		
+		
+//		totalFall.setText(totalDistance + " ft");
+//		numFalls.setText( totalFalls + " falls");
+		
+		
 		ffm = new FreeFallManager(this);
 		
 		chooseAudio.setOnClickListener( new View.OnClickListener() {
@@ -52,6 +74,44 @@ public class Menu extends Activity{
 			}
 		});
 		
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		save();
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		save();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		readAndDisplay();
+	}
+	
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+		readAndDisplay();
+	}
+	
+	private void save(){
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putInt( getString(R.string.total_distance_key), (int) Math.floor(totalDistance) );
+		editor.putInt( getString(R.string.falls_key), totalFalls);
+		editor.commit();
+	}
+	
+	private void readAndDisplay(){
+		totalDistance = sharedPref.getInt( getString(R.string.total_distance_key), 0);
+		totalFalls = sharedPref.getInt( getString(R.string.falls_key), 0);
+		totalFall.setText(totalDistance + " ft");
+		numFalls.setText( totalFalls + " falls");
 	}
 	
 	@Override
