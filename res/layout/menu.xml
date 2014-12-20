@@ -34,7 +34,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/tv_fall"
+        android:id="@+id/tv_recentFallLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tv_pickAudio"
@@ -44,10 +44,48 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
+        android:id="@+id/tv_totalFallLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/tv_recentFallLabel"
+        android:layout_below="@+id/tv_recentFallLabel"
+        android:layout_marginTop="27dp"
+        android:text="Most Recent Fall"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
         android:id="@+id/tv_totalFall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/tv_fall"
+        android:layout_above="@+id/tv_totalFallLabel"
+        android:layout_toRightOf="@+id/tv_audio"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/tv_recentFall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tv_totalFallLabel"
+        android:layout_toRightOf="@+id/tv_audio"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/tv_numFallsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/tv_totalFallLabel"
+        android:layout_below="@+id/tv_totalFallLabel"
+        android:layout_marginTop="26dp"
+        android:text="Number of Falls"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tv_numFalls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tv_numFallsLabel"
         android:layout_toRightOf="@+id/tv_audio"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceSmall" />

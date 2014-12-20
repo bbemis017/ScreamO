@@ -1,5 +1,8 @@
 package com.noo.screamo;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -24,6 +27,8 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 	private double distance;
 	private double startTime;
 	
+	private NumberFormat formatter;
+	
 	public FreeFallManager(Activity act){
 		
 		setUp(act);
@@ -43,6 +48,8 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 		freefall = false;
 		distance = 0;
 		startTime = 0;
+		
+		formatter = new DecimalFormat("#0.00");
 		
 		m = (Menu) act;
 		
@@ -78,9 +85,13 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 			freefall = false;
 			double stopTime = System.currentTimeMillis();
 			double delta = (stopTime - startTime) /1000;
-			distance += .5*9.81*delta*delta;
+			distance = .5*9.81*delta*delta *3.28;
 			
-			m.totalFall.setText("" + distance);
+			m.recentFall.setText( formatter.format( distance ) + " ft");
+			m.totalFall.setText(  formatter.format(m.totalDistance += distance) + " ft");
+			
+			m.totalFalls++;
+			m.numFalls.setText( m.totalFalls + " falls");
 		}
 		
 	}
@@ -93,7 +104,7 @@ public class FreeFallManager implements SensorEventListener, OnCompletionListene
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		double accel = Math.sqrt( (double) event.values[0]*event.values[0] + event.values[1]*event.values[1] + event.values[2]*event.values[2] );
+		double accel = Math.sqrt( (double) (event.values[0]*event.values[0]) + (event.values[1]*event.values[1]) + (event.values[2]*event.values[2]) );
 		if ( accel < ERROR){//if phone is in freefall
 			playAudio();
 			startFreeFall();

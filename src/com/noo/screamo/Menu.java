@@ -17,10 +17,11 @@ import android.widget.TextView;
 public class Menu extends Activity{
 	
 	private Button chooseAudio;
-	public TextView audio, totalFall;
+	public TextView audio, recentFall, totalFall, numFalls;
 	private FreeFallManager ffm;
 	
-	
+	public double totalDistance;
+	public int totalFalls;
 	
 	
 	@Override
@@ -33,8 +34,12 @@ public class Menu extends Activity{
 		
 		chooseAudio = (Button) findViewById(R.id.b_chooseAudio);
 		audio = (TextView) findViewById(R.id.tv_audio);
+		recentFall = (TextView) findViewById(R.id.tv_recentFall);
 		totalFall = (TextView) findViewById(R.id.tv_totalFall);
+		numFalls = (TextView) findViewById(R.id.tv_numFalls);
 		
+		totalDistance = 0;
+		totalFalls = 0;
 		ffm = new FreeFallManager(this);
 		
 		chooseAudio.setOnClickListener( new View.OnClickListener() {
